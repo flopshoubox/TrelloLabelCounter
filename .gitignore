@@ -60,5 +60,5 @@ typings/
 # next.js build output
 .next
 
-# secret.js : trello account keys
-secret.js
+# setup.js : trello account keys and trello boardId
+setup.js

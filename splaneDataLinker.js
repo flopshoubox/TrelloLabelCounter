@@ -1,15 +1,46 @@
 const Trello = require("trello");
+const fs = require("fs");
 
-const secrets = require("./secret.js");
+const setupFilePath = "./setup.js";
 
-var trello = new Trello(secrets.API_KEY, secrets.API_TOKEN);
+try {
+  if (!fs.existsSync(setupFilePath)) {
+    console.log(`To use this app, you will need to create a ./setup.js file with the following data :
 
-const GBH_BOARD_ID = "gJ3SOdm1";
+    const API_TOKEN = ""
+    const API_KEY = "";
+    const TRELLO_BOARD_ID = "";
+
+    module.exports = {
+      API_TOKEN,
+      API_KEY,
+      TRELLO_BOARD_ID
+    };
+
+
+    ------------------------
+    On this website : https://trello.com/app-key
+    You will find 
+    -> "Key" section to fill "API_KEY"
+    -> Click on "you can manually generate a Token" to generate the "API_TOKEN"
+
+    To get your board id, go to your board on trello website,
+    -> look at the url "https://trello.com/b/board_id/board_name"
+    -> "board_id" => "TRELLO_BOARD_ID"
+`);
+    process.exit();
+  }
+} catch (err) {
+  console.error(err);
+}
+
+const setup = require(setupFilePath);
+const trello = new Trello(setup.API_KEY, setup.API_TOKEN);
 
 const getSprintLists = async sprintNumber => {
   let response;
   try {
-    allLists = await trello.getListsOnBoard(GBH_BOARD_ID);
+    allLists = await trello.getListsOnBoard(setup.TRELLO_BOARD_ID);
     return allLists.filter(list => list.name.includes(sprintNumber));
   } catch (error) {
     if (error) {
@@ -80,7 +111,7 @@ const mergeDuplicateLabels = allLabelsAndPoints => {
 };
 
 const convertTagIdInTagName = async allLabelsFilteredAndPoints => {
-  const boardTags = await trello.getLabelsForBoard(GBH_BOARD_ID);
+  const boardTags = await trello.getLabelsForBoard(setup.TRELLO_BOARD_ID);
 
   return await Promise.all(
     allLabelsFilteredAndPoints.map(labelAndPoints => {
