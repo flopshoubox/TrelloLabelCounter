@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "node-fetch": "^2.6.0",
+    "patch-package": "^6.2.0",
     "trello": "^0.9.1"
   }
 }
